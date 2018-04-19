@@ -33,6 +33,8 @@ sub cgiapp_init {
               TEMPLATE_OPTIONS => {
                         INCLUDE_PATH => '/var/www/html/projectx/kernel/output/templates/',
                         POST_CHOMP   => 1,
+                        #PRE_PROCESS => 'header.tmpl',
+                        #POST_PROCESS => 'footer.tmpl',
                         FILTERS => {
                                      'currency' => sub { sprintf('$ %0.2f', @_) },
                         },
@@ -65,10 +67,13 @@ sub display_user_form {
         $detailu{$form_val} = $self->{user}->param($form_val) || '';
     }
     $detailu{'user_id'} = $user_id;
+    $detailu{'content_page'} = 'pageform.tmpl'; 
     $detailu{$errs} if $errs;
         
     #display the form
-    return $self->tt_process('user_form_toolkit.tmpl', \%detailu); 
+    #return $self->tt_process('user_form_toolkit.tmpl', \%detailu);
+
+    return $self->tt_process('maindefault.tmpl', \%detailu); 
 }
 
 #------------------------------------------------------------------------------
@@ -122,10 +127,12 @@ sub list_users {
     my $users = $self->{user}->_get_users();
 
     my %listu = (
-        listuser => $users
+        listuser => $users,
+        content_page => 'pagelist.tmpl' 
     );
  
-    return $self->tt_process('user_list_toolkit.tmpl', \%listu);
+    return $self->tt_process('maindefault.tmpl', \%listu);
+    #return $self->tt_process('user_list_toolkit.tmpl', \%listu);
 }
 
 #------------------------------------------------------------------------------
